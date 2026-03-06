@@ -1,14 +1,3 @@
-/*
-taken from https://www.myinstants.com/en/trending/us/
-
-(() => {
-  return Array.from(document.querySelectorAll("#instants_container .instant")).map(el => ({
-    name: el.querySelector(".instant-link")?.textContent.trim(),
-    color: el.querySelector(".circle")?.style.backgroundColor,
-    mp3: el.querySelector("button[onclick^='play']")?.getAttribute("onclick")?.match(/'([^']+\.mp3)'/)?.[1]
-  }));
-})()
-*/
 export const sounds =
     // SPLITTER ---------------
 [
