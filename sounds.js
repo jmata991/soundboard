@@ -23,6 +23,12 @@ export const sounds =
         "color": "rgb(0, 233, 255)",
         "mp3": "/media/sounds/babyboo.mp3"
     },
+      [
+    {
+        "name": "babyboo",
+        "color": "rgb(0, 233, 255)",
+        "mp3": "/media/sounds/why.mp3"
+    },
     {
         "name": "VINE BOOM SOUND",
         "color": "rgb(255, 0, 0)",
