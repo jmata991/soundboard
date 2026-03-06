@@ -106,7 +106,7 @@ function rightClickPanel(event, button, sound) {
     
     download.onclick = () => {
         const link = document.createElement('a');
-        link.href = 'https://cdn.jsdelivr.net/gh/genizy/soundboard@main/'+sound.mp3;
+        link.href = 'https://cdn.jsdelivr.net/gh/jmata991/soundboard@main/'+sound.mp3;
         link.download = sound.mp3.split("/").pop();
         document.body.appendChild(link);
         link.click();
@@ -129,4 +129,5 @@ function rightClickPanel(event, button, sound) {
         document.addEventListener('click', handleOutsideClick);
     }, 0);
 }
+
 
