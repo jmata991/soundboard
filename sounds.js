@@ -20,7 +20,7 @@ export const sounds =
   [
     {
         "name": "baby-boo",
-        "color": "rgb(255, 0, 0)",
+        "color": "rgb(0, 233, 255)",
         "mp3": "/media/sounds/01-baby-boo.mp3"
     },
     {
