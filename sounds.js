@@ -10,13 +10,13 @@ export const sounds =
     {
         "name": "baby-boo",
         "color": "rgb(0, 233, 255)",
-        "mp3": "/media/babyboo.mp3"
+        "mp3": "/media/sounds/babyboo.mp3"
     },
       [
     {
         "name": "babyboo",
         "color": "rgb(0, 233, 255)",
-        "mp3": "/media/sounds/why.mp3"
+        "mp3": "/media/whyman.mp3"
     },
     {
         "name": "VINE BOOM SOUND",
