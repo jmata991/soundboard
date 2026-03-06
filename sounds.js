@@ -6,13 +6,13 @@ export const sounds =
         "color": "rgb(255, 0, 0)",
         "mp3": "/media/sounds/fahhhhhhhhhhhhhh.mp3"
     },
-  [
+
     {
         "name": "baby-boo",
         "color": "rgb(0, 233, 255)",
         "mp3": "/media/sounds/babyboo.mp3"
     },
-      [
+
     {
         "name": "babyboo",
         "color": "rgb(0, 233, 255)",
