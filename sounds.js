@@ -33,6 +33,11 @@ export const sounds =
         "color": "rgb(255, 0, 0)",
         "mp3": "/media/sounds/among-us-role-reveal-sound.mp3"
     },
+        {
+        "name": "pls seend me a laughing disco",
+        "color": "rgb(255, 251, 135)",
+        "mp3": "/media/sounds/disco.mp3"
+    },
     {
         "name": "Fart",
         "color": "rgb(102, 51, 0)",
