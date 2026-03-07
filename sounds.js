@@ -48,6 +48,11 @@ export const sounds =
         "color": "rgb(0, 0, 0)",
         "mp3": "/media/sounds/faaah.mp3"
     },
+        {
+        "name": "umm",
+        "color": "rgb(0, 0, 0)",
+        "mp3": "/media/sounds/umm.mp3"
+    },
     {
         "name": "Anime Wow",
         "color": "rgb(255, 51, 102)",
