@@ -1,14 +1,3 @@
-/*
-taken from https://www.myinstants.com/en/trending/us/
-
-(() => {
-  return Array.from(document.querySelectorAll("#instants_container .instant")).map(el => ({
-    name: el.querySelector(".instant-link")?.textContent.trim(),
-    color: el.querySelector(".circle")?.style.backgroundColor,
-    mp3: el.querySelector("button[onclick^='play']")?.getAttribute("onclick")?.match(/'([^']+\.mp3)'/)?.[1]
-  }));
-})()
-*/
 export const sounds =
     // SPLITTER ---------------
 [
@@ -17,15 +6,41 @@ export const sounds =
         "color": "rgb(255, 0, 0)",
         "mp3": "/media/sounds/fahhhhhhhhhhhhhh.mp3"
     },
+   {
+        "name": "(NEW)jayden's bus is here",
+        "color": "rgb(255, 0, 0)",
+        "mp3": "/media/sounds/jbih.mp3"
+    },
+      {
+        "name": "(NEW)baby-boo",
+        "color": "rgb(0, 233, 255)",
+        "mp3": "/media/sounds/babyboo.mp3"
+    },
+
+    {
+        "name": "babyboo",
+        "color": "rgb(0, 233, 255)",
+        "mp3": "/media/whyman.mp3"
+    },
     {
         "name": "VINE BOOM SOUND",
         "color": "rgb(255, 0, 0)",
         "mp3": "/media/sounds/vine-boom.mp3"
     },
     {
-        "name": "FAAAH",
-        "color": "rgb(0, 0, 0)",
-        "mp3": "/media/sounds/faaah.mp3"
+        "name": "Fahhh",
+        "color": "rgb(255, 0, 0)",
+        "mp3": "/media/sounds/fahhh_KcgAXfs.mp3"
+    },
+    {
+        "name": "Among Us role reveal sound",
+        "color": "rgb(255, 0, 0)",
+        "mp3": "/media/sounds/among-us-role-reveal-sound.mp3"
+    },
+        {
+        "name": "pls seend me a laughing disco",
+        "color": "rgb(255, 251, 135)",
+        "mp3": "/media/sounds/disco.mp3"
     },
     {
         "name": "Fart",
