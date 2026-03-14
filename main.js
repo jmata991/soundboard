@@ -170,6 +170,62 @@ if (sound.isCustom) {
     };
     panel.appendChild(deleteBtn);
 }
+const addSoundButton = document.getElementById('addSoundButton');
+const soundUpload = document.getElementById('soundUpload');
+
+// 1. When the visible button is clicked, trigger the hidden file input
+addSoundButton.onclick = () => {
+    soundUpload.click();
+};
+
+// 2. When the user selects a file...
+soundUpload.onchange = (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    // Optional: Check file size (localStorage usually caps at 5MB total)
+    if (file.size > 2 * 1024 * 1024) {
+        alert("File is too big! Try a clip under 2MB.");
+        return;
+    }
+
+    const reader = new FileReader();
+    
+    reader.onload = (e) => {
+        const newSound = {
+            // Remove the file extension for the display name
+            name: file.name.replace(/\.[^/.]+$/, ""), 
+            // This is the actual audio data as a string
+            mp3: e.target.result, 
+            color: '#4CAF50', // Default green for custom sounds
+            isCustom: true
+        };
+
+        // 3. Save to localStorage
+        let storedCustoms = JSON.parse(localStorage.getItem('customSounds') || '[]');
+        storedCustoms.push(newSound);
+        localStorage.setItem('customSounds', JSON.stringify(storedCustoms));
+
+        // 4. Clear the input so you can upload the same file again if deleted
+        soundUpload.value = '';
+
+        // 5. Refresh the board immediately
+        renderSounds(searchInput.value);
+    };
+
+    // Start reading the file
+    reader.readAsDataURL(file);
+};
+function renderSounds(filter = '') {
+    soundBoard.innerHTML = '';
+    
+    // Combine your JS file sounds + the ones the user just uploaded
+    const localSounds = JSON.parse(localStorage.getItem('customSounds') || '[]');
+    const allSounds = [...sounds, ...localSounds]; 
+
+    // ... (rest of your filtering logic)
+}
+
 function exportCustomSounds() {
     const data = localStorage.getItem('customSounds');
     const blob = new Blob([`export const customSounds = ${data};`], { type: 'text/javascript' });
