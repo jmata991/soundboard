@@ -63,177 +63,156 @@ function renderSounds(filter = '') {
         soundBoard.appendChild(wrapper);
     });
 }
-renderSounds();
-searchInput.addEventListener('input', () => {
-    renderSounds((showFavorites? "filter:favorite ": "")+searchInput.value);
-});
+// --- Core State & Elements ---
+const soundBoard = document.getElementById('soundBoard');
+const searchInput = document.getElementById('searchInput');
 const addSoundButton = document.getElementById('addSoundButton');
 const soundUpload = document.getElementById('soundUpload');
+let currentAudios = [];
+let allowOverlap = true; 
 
-// Trigger the hidden file input when the button is clicked
+// --- 1. Initialization ---
+renderSounds();
+
+// --- 2. Search Logic ---
+searchInput.addEventListener('input', () => {
+    // Uses window.showFavorites if you have a toggle button elsewhere
+    const filterPrefix = (window.showFavorites ? "filter:favorite " : "");
+    renderSounds(filterPrefix + searchInput.value);
+});
+
+// --- 3. Upload & Custom Sound Logic ---
 addSoundButton.onclick = () => soundUpload.click();
 
 soundUpload.onchange = (event) => {
-    const file = event.target.files[0];
+    // FIX: Access the first file in the FileList
+    const file = event.target.files[0]; 
     if (!file) return;
 
-    const reader = new FileReader();
-    reader.onload = (e) => {
-        const customSound = {
-            name: file.name.split('.')[0], // Use filename as the name
-            mp3: e.target.result,         // Store the actual audio data string
-            color: '#4CAF50',             // Default green for custom sounds
-            isCustom: true                // Flag to identify custom sounds
-        };
-
-        // Save to a "customSounds" list in localStorage
-        let customSounds = localStorage.getItem('customSounds') ? JSON.parse(localStorage.getItem('customSounds')) : [];
-        customSounds.push(customSound);
-        localStorage.setItem('customSounds', JSON.stringify(customSounds));
-
-        // Refresh the board
-        renderSounds(searchInput.value);
-    };
-    reader.readAsDataURL(file); // Convert file to string for storage
-};
-function renderSounds(filter = '') {
-    soundBoard.innerHTML = '';
-    
-    // 1. Get the original sounds
-    let originalSounds = sounds;
-    
-    // 2. Get custom sounds from localStorage
-    let customSounds = localStorage.getItem('customSounds') ? JSON.parse(localStorage.getItem('customSounds')) : [];
-    
-    // 3. Combine them
-    let allSounds = [...originalSounds, ...customSounds];
-
-    let finalSounds;
-    if (filter.startsWith("filter:favorite ")) {
-        const searchTerms = filter.replace('filter:favorite ', '').toLowerCase();
-        finalSounds = (localStorage.getItem('favorites') ? JSON.parse(localStorage.getItem('favorites')) : [])
-            .filter(s => s.name.toLowerCase().includes(searchTerms));
-    } else {
-        finalSounds = allSounds.filter(s => s.name.toLowerCase().includes(filter.toLowerCase()));
-    }
-
-    finalSounds.forEach(sound => {
-        // ... (keep your existing button creation logic) ...
-        
-        button.onclick = () => {
-            if (!allowOverlap) {
-                currentAudios.forEach(a => a.pause());
-                currentAudios = [];
-            }
-            
-            // Check if it's a custom sound (already a Data URL) or a hosted file
-            const audioSrc = sound.isCustom ? sound.mp3 : "https://cdn.jsdelivr.net" + sound.mp3;
-            
-            const audio = new Audio(audioSrc);
-            audio.play();
-            currentAudios.push(audio);
-            image.classList.add('pressed');
-            setTimeout(() => image.classList.remove('pressed'), 150);
-        };
-        
-        // ... (rest of your wrapper/label logic) ...
-    });
-}
-// ... existing favorite and download buttons ...
-
-// Add Delete Button (Only for Custom Sounds)
-if (sound.isCustom) {
-    const deleteBtn = document.createElement('button');
-    deleteBtn.className = 'right-click-panel-button';
-    deleteBtn.style.color = '#ff4444'; // Red to indicate deletion
-    deleteBtn.textContent = '🗑️ Delete Sound';
-
-    deleteBtn.onclick = () => {
-        if (confirm(`Are you sure you want to delete "${sound.name}"?`)) {
-            // 1. Get current custom sounds
-            let customSounds = JSON.parse(localStorage.getItem('customSounds') || '[]');
-            
-            // 2. Filter out the current sound
-            customSounds = customSounds.filter(s => s.name !== sound.name || s.mp3 !== sound.mp3);
-            
-            // 3. Save back to localStorage
-            localStorage.setItem('customSounds', JSON.stringify(customSounds));
-            
-            // 4. Remove from Favorites if it was there
-            let favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
-            favorites = favorites.filter(s => s.name !== sound.name);
-            localStorage.setItem('favorites', JSON.stringify(favorites));
-
-            panel.remove();
-            renderSounds(searchInput.value); // Refresh the UI
-        }
-    };
-    panel.appendChild(deleteBtn);
-}
-const addSoundButton = document.getElementById('addSoundButton');
-const soundUpload = document.getElementById('soundUpload');
-
-// 1. When the visible button is clicked, trigger the hidden file input
-addSoundButton.onclick = () => {
-    soundUpload.click();
-};
-
-// 2. When the user selects a file...
-soundUpload.onchange = (event) => {
-    const file = event.target.files[0];
-    if (!file) return;
-
-    // Optional: Check file size (localStorage usually caps at 5MB total)
+    // Check size (localStorage limit is ~5MB total)
     if (file.size > 2 * 1024 * 1024) {
         alert("File is too big! Try a clip under 2MB.");
         return;
     }
 
     const reader = new FileReader();
-    
     reader.onload = (e) => {
         const newSound = {
-            // Remove the file extension for the display name
             name: file.name.replace(/\.[^/.]+$/, ""), 
-            // This is the actual audio data as a string
             mp3: e.target.result, 
-            color: '#4CAF50', // Default green for custom sounds
+            color: '#4CAF50',
             isCustom: true
         };
 
-        // 3. Save to localStorage
-        let storedCustoms = JSON.parse(localStorage.getItem('customSounds') || '[]');
-        storedCustoms.push(newSound);
-        localStorage.setItem('customSounds', JSON.stringify(storedCustoms));
-
-        // 4. Clear the input so you can upload the same file again if deleted
-        soundUpload.value = '';
-
-        // 5. Refresh the board immediately
+        let customSounds = JSON.parse(localStorage.getItem('customSounds') || '[]');
+        customSounds.push(newSound);
+        localStorage.setItem('customSounds', JSON.stringify(customSounds));
+        
+        soundUpload.value = ''; // Clear input for re-uploads
         renderSounds(searchInput.value);
     };
-
-    // Start reading the file
     reader.readAsDataURL(file);
 };
+
+// --- 4. Main Rendering Engine ---
 function renderSounds(filter = '') {
     soundBoard.innerHTML = '';
     
-    // Combine your JS file sounds + the ones the user just uploaded
+    // Assumes 'sounds' is defined in your other sounds.js file
     const localSounds = JSON.parse(localStorage.getItem('customSounds') || '[]');
-    const allSounds = [...sounds, ...localSounds]; 
+    const allSounds = [...(window.sounds || []), ...localSounds]; 
 
-    // ... (rest of your filtering logic)
+    let finalSounds;
+    if (filter.startsWith("filter:favorite ")) {
+        const searchTerms = filter.replace('filter:favorite ', '').toLowerCase();
+        const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+        finalSounds = favorites.filter(s => s.name.toLowerCase().includes(searchTerms));
+    } else {
+        finalSounds = allSounds.filter(s => s.name.toLowerCase().includes(filter.toLowerCase()));
+    }
+
+    finalSounds.forEach(sound => {
+        const container = document.createElement('div');
+        container.className = 'sound-item';
+
+        const button = document.createElement('button');
+        button.className = 'sound-button';
+        button.style.backgroundColor = sound.color || '#333';
+        button.innerText = sound.name;
+
+        button.onclick = () => {
+            if (!allowOverlap) {
+                currentAudios.forEach(a => a.pause());
+                currentAudios = [];
+            }
+            
+            const audioSrc = sound.isCustom ? sound.mp3 : "https://cdn.jsdelivr.net" + sound.mp3;
+            const audio = new Audio(audioSrc);
+            audio.play();
+            currentAudios.push(audio);
+            
+            button.classList.add('pressed');
+            setTimeout(() => button.classList.remove('pressed'), 150);
+        };
+
+        button.oncontextmenu = (e) => {
+            e.preventDefault();
+            showContextMenu(e, sound);
+        };
+
+        container.appendChild(button);
+        soundBoard.appendChild(container);
+    });
 }
 
-function exportCustomSounds() {
-    const data = localStorage.getItem('customSounds');
-    const blob = new Blob([`export const customSounds = ${data};`], { type: 'text/javascript' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'customsounds.js';
-    a.click();
+// --- 5. Context Menu & Deletion ---
+function showContextMenu(e, sound) {
+    const oldPanel = document.querySelector('.right-click-panel');
+    if (oldPanel) oldPanel.remove();
+
+    const panel = document.createElement('div');
+    panel.className = 'right-click-panel';
+    // Ensure the panel is positioned correctly
+    panel.style.position = 'absolute';
+    panel.style.left = `${e.pageX}px`;
+    panel.style.top = `${e.pageY}px`;
+    panel.style.zIndex = '1000';
+
+    if (sound.isCustom) {
+        const deleteBtn = document.createElement('button');
+        deleteBtn.textContent = '🗑️ Delete Sound';
+        deleteBtn.style.color = '#ff4444';
+        deleteBtn.style.cursor = 'pointer';
+        
+        deleteBtn.onclick = () => {
+            if (confirm(`Delete "${sound.name}"?`)) {
+                let customSounds = JSON.parse(localStorage.getItem('customSounds') || '[]');
+                // Filter by unique mp3 data
+                customSounds = customSounds.filter(s => s.mp3 !== sound.mp3);
+                localStorage.setItem('customSounds', JSON.stringify(customSounds));
+                
+                let favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+                favorites = favorites.filter(s => s.name !== sound.name);
+                localStorage.setItem('favorites', JSON.stringify(favorites));
+
+                panel.remove();
+                renderSounds(searchInput.value);
+            }
+        };
+        panel.appendChild(deleteBtn);
+    } else {
+        // Option for non-custom sounds
+        const info = document.createElement('div');
+        info.innerText = "Original Sound (Cannot Delete)";
+        info.style.padding = "5px";
+        panel.appendChild(info);
+    }
+
+    document.body.appendChild(panel);
+    // Close panel when clicking anywhere else
+    setTimeout(() => {
+        document.addEventListener('click', () => panel.remove(), { once: true });
+    }, 10);
 }
 
 
