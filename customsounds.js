@@ -2,7 +2,7 @@
 export const customSounds = [
     {
         name: "My Epic Sound",
-        mp3: "sounds/my-epic-sound.mp3", // Path to a local file in your folder
+        mp3: "media/sounds/my-epic-sound.mp3", // Path to a local file in your folder
         color: "#ff5733",
         isCustom: true
     }
